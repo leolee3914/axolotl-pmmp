@@ -254,6 +254,16 @@ class Item implements \JsonSerializable{
 		$this->serializeCompoundTag($this->nbt);
 		return $this->nbt;
 	}
+	
+	/**
+	 * #3914
+	 * get nbt directly without any serializing for reading extra data
+	 * this is for READ ONLY
+	 * do not modify or set it to any Item
+	 */
+	final public function xxGetReadOnlyNamedTagForExtraData() : CompoundTag{
+		return $this->nbt;
+	}
 
 	/**
 	 * Sets the Item's NBT from the supplied CompoundTag object.
