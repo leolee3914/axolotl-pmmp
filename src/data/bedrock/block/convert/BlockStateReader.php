@@ -81,6 +81,16 @@ final class BlockStateReader{
 				default: throw $this->badValueException($name, (string) $tag->getValue());
 			}
 		}
+		if ( match ($name) {
+			'minecraft:connection_east',//pocketmine\data\bedrock\block\BlockStateNames::MC_CONNECTION_EAST
+			'minecraft:connection_north',
+			'minecraft:connection_south',
+			'minecraft:connection_west',
+				=> true,
+			default => false,
+		} ) {
+			return false;
+		}
 		throw $this->missingOrWrongTypeException($name, $tag);
 	}
 
@@ -110,6 +120,9 @@ final class BlockStateReader{
 		$tag = $this->data->getState($name);
 		if($tag instanceof StringTag){
 			return $tag->getValue();
+		}
+		if ( $name === 'minecraft:corner' ) {//pocketmine\data\bedrock\block\BlockStateNames::MC_CORNER
+			return 'none';//pocketmine\data\bedrock\block\BlockStateStringValues::MC_CORNER_NONE
 		}
 		throw $this->missingOrWrongTypeException($name, $tag);
 	}
