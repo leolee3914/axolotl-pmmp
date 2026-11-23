@@ -92,6 +92,9 @@ final class BlockStateData{
 			$states = $nbt->getCompoundTag(self::TAG_STATES) ?? throw new BlockStateDeserializeException("Missing tag \"" . self::TAG_STATES . "\"");
 			$version = $nbt->getInt(self::TAG_VERSION, 0);
 			//TODO: read version from VersionInfo::TAG_WORLD_DATA_VERSION - we may need it to fix up old blockstates
+			if ( $version === ((1 << 24) | (21 << 16) | (70 << 8) | (1)) ) {
+				$version = ((1 << 24) | (21 << 16) | (60 << 8) | (33));
+			}
 		}catch(NbtException $e){
 			throw new BlockStateDeserializeException($e->getMessage(), 0, $e);
 		}
