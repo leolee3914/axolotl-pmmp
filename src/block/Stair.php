@@ -52,12 +52,21 @@ class Stair extends Transparent implements HorizontalFacing{
 	//state id and persisted, rather than derived on read. It is (re)calculated on placement and neighbour changes.
 	private function recalculateShape() : StairShape{
 		$clockwise = Facing::rotateY($this->facing, true);
-		if(($backFacing = $this->getPossibleCornerFacing(false)) !== null){
+		if(($backFacing = $this->getPossibleCornerFacing(false)) !== null and $this->canTakeShape(Facing::opposite($backFacing))){
 			return $backFacing === $clockwise ? StairShape::OUTER_RIGHT : StairShape::OUTER_LEFT;
-		}elseif(($frontFacing = $this->getPossibleCornerFacing(true)) !== null){
+		}elseif(($frontFacing = $this->getPossibleCornerFacing(true)) !== null and $this->canTakeShape($frontFacing)){
 			return $frontFacing === $clockwise ? StairShape::INNER_RIGHT : StairShape::INNER_LEFT;
 		}
 		return StairShape::STRAIGHT;
+	}
+
+	// see https://github.com/altayofficial/Altay/blob/118d51d45fb85cc1a722de1d3e6669dc8acc0c49/src/block/Stair.php#L155
+	private function canTakeShape ( int $facing ) : bool {
+		$side = $this->getSide($facing);
+		if ( $side instanceof Stair and $side->getFacing() === $this->getFacing() and $side->isUpsideDown() === $this->isUpsideDown() ) {
+			return false;
+		}
+		return true;
 	}
 
 	public function onNearbyBlockChange() : void{
